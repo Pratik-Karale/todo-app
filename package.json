@@ -1,0 +1,28 @@
+{
+  "name": "todo-app",
+  "version": "1.0.0",
+  "description": "my first dynamic web app!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "watch": "webpack --watch"
+  },
+  "mode":"development",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pratik-Karale/todo-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Pratik-Karale/todo-app/issues"
+  },
+  "homepage": "https://github.com/Pratik-Karale/todo-app#readme",
+  "devDependencies": {
+    "html-webpack-plugin": "^5.5.0",
+    "webpack": "^5.70.0",
+    "webpack-cli": "^4.9.2"
+  }
+}
