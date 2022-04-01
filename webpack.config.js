@@ -7,6 +7,14 @@ module.exports = {
     path: path.resolve(__dirname, './dist'),
     filename: 'main.js',
   },
-  "mode":"development",
+  module:{
+    rules:[
+      {
+        test:/\.css/i,
+        use:["style-loader","css-loader"]
+      }
+    ]
+  },
+  mode:"development",
   plugins: [new HtmlWebpackPlugin()],
 };

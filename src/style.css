@@ -1,0 +1,99 @@
+body {
+    margin: 0;
+}
+
+#app {
+    grid-template-columns: repeat(4, 1fr);
+    display: grid;
+    width: 100vw;
+    height: 100vh;
+    /*! gap: 0; */
+    grid-template-rows: min-content;
+}
+
+nav {
+    background: black;
+    color: white;
+    padding: 1rem;
+    font-size: 1.5rem;
+    grid-column: 1/-1;
+    height: 30px;
+    margin: 0;
+    display: inline-block;
+}
+
+.collections-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 2rem 1em 0;
+}
+
+.collection-btn {
+    border: none;
+    background: #d3dde3;
+    background-image: -webkit-linear-gradient(top, #d3dde3, #0084d6);
+    background-image: -moz-linear-gradient(top, #d3dde3, #0084d6);
+    background-image: -ms-linear-gradient(top, #d3dde3, #0084d6);
+    background-image: -o-linear-gradient(top, #d3dde3, #0084d6);
+    background-image: linear-gradient(to bottom, #d3dde3, #0084d6);
+    -webkit-border-radius: 28;
+    -moz-border-radius: 28;
+    border-radius: 28px;
+    font-family: Arial;
+    color: #ffffff;
+    font-size: 1.3rem;
+    padding: 10px 20px 10px 20px;
+    text-decoration: none;
+}
+
+.collection-btn:hover {
+    background: #3cb0fd;
+    background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+    background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+    background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+    background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+    background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+    text-decoration: none;
+}
+
+.current-collection-container {
+    grid-column: 2/-1;
+    padding: 1rem;
+}
+
+.collection-todos {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.todo-container {
+    border: 1px solid black;
+    height: 70px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 2rem;
+}
+
+.add-collection-container{
+    height:44px;
+    display: flex;
+    width: 308px;
+    border-radius: 100px;
+}
+
+#add-collection-input{
+    border-radius: 5% 0 0 5%;
+    outline: none;
+    border:1px solid lightblue;
+    flex-grow: 1;
+}
+#add-collection-btn{
+    border-radius: 0 5% 5% 0;
+    padding: 1rem;
+    display: grid;
+    place-items: center;
+    background: lightblue;
+    border: none;
+}
