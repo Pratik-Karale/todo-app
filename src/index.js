@@ -13,7 +13,8 @@ const allCollections=new (function(){
     const collections=[]
     this.add=(collection)=>collections.push(collection)
     this.delete=(collection)=>collections.splice(collections.indexOf(collection),1)
-    this.get=(collectionName)=>this.collection.find((currentCollection)=>collectionName==currentCollection.name)
+    this.get=(collectionName)=>collections.find((currentCollection)=>collectionName==currentCollection.name)
+    this.collections=()=>collections
 })()
 
 
@@ -27,9 +28,13 @@ function addNav(){
     `))
 }
 function addCollectionBtn(collectionName){
-    getAppElem().querySelector(".collections-nav").appendChild(parseTohtml(`
+    const collectionBtn=parseTohtml(`
     <button class="collection-btn">${collectionName}</button>
-    `))
+    `)
+    getAppElem().querySelector(".collections-nav").appendChild(collectionBtn)
+    collectionBtn.addEventListener("click",()=>{
+        changeCollectiontab(allCollections.get(collectionName))
+    })
 }
 
 function addSideBar(){
@@ -65,6 +70,12 @@ function showCollectionTab(){
       </div>
     </div>
     `)
+    collectionTab.querySelector("#add-todo-btn").addEventListener("click",()=>{
+        const todoName=collectionTab.querySelector("#add-todo-name-input").value
+        const todoDate=collectionTab.querySelector("#add-todo-date-input").value
+        addTodoElem(todoName,todoDate)
+        currentCollection.add(todoName,todoDate)
+    })
     collectionTab.style.display="none"
     getAppElem().appendChild(collectionTab)
 }
@@ -72,24 +83,47 @@ function showCollectionTab(){
 function changeCollectiontab(collection){
     currentCollection=collection
     const collectionTab=document.querySelector(".current-collection-container")
+    removeAllTodos()
     collectionTab.style.display=""
     collectionTab.querySelector(".collection-name").innerText=collection.name
     for(const todo of collection.todos){
-        addTodoElem(todo)
+        addTodoElem(todo.name,todo.date)
     }
 }
 
-function addTodoElem(todo){
+function addTodoElem(todoName,todoDate){
     const collectionTodosElem=document.querySelector(".collection-todos")
-    collectionTodosElem.appendChild(parseTohtml(`
-    <div class="todo-container" data-todo-name="${todo.name}">
+    const todoElem=parseTohtml(`
+    <div class="todo-container" data-todo-name="${todoName}">
         <input type="checkbox" class="todo-check">
-        <input type="text" class="todo-name" value="${todo.name}"></input>
-        <input type="date" class="todo-date" value="${todo.date}"></input>
+        <input type="text" class="todo-name" value="${todoName}"></input>
+        <input type="date" class="todo-date" value="${todoDate}"></input>
     </div>
-    `))
-}
+    `)
+    todoElem.querySelector(".todo-check").addEventListener("click",()=>{
+        // removeTodoElem(todoElem)  
+        todoElem.remove() 
+        currentCollection.delete(currentCollection.get(todoName))
+    })
+    todoElem.querySelector(".todo-name").addEventListener("focusin",(evt)=>{
+        evt.target.addEventListener("focusout",()=>{
+            currentCollection.get(todoName).name=evt.target.value
+        },{once:true})
+    })
+    todoElem.querySelector(".todo-date").addEventListener("focusin",(evt)=>{
+        evt.target.addEventListener("focusout",()=>{
+            currentCollection.get(todoName).date=evt.target.value
+        },{once:true})
+    })
+    collectionTodosElem.appendChild(todoElem)
 
+}
+// function removeTodoElem(todoName){
+// }
+
+function removeAllTodos(){
+    document.querySelectorAll(".todo-container").forEach((todoElem)=>todoElem.remove())
+}
 
 
 addAppContainer()
@@ -98,3 +132,8 @@ addSideBar()
 showCollectionTab()
 
 let currentCollection=null
+
+setInterval(()=>{
+    console.log(JSON.stringify(allCollections.collections()))
+},1000)
+

@@ -8,11 +8,11 @@ class TodoCollection{
     add(todoName,todoDate){
         this.todos.push(new Todo(todoName,todoDate))
     }
-    delete(todoName){
-        this.todos=this.todos.filter((todo)=>todo.name!==todoName)
+    delete(todo){
+        this.todos=this.todos.filter((t)=>t!==todo)
     }
-    get(todo){
-        return this.todos.find((t)=>todo==t)
+    get(todoName){
+        return this.todos.find((t)=>todoName==t.name)
     }
 }
 
