@@ -1,64 +1,100 @@
-import { Todo } from "./Todo"
-import { TodoCollection } from "./todoCollection"
 import "./style.css"
-import {displayDashboard,addOnNewCollectionListener,showCollectionTab,makeCollectionBtn,addOnNewTodoListener,addTodoElem,addOnDeleteTodoListener} from "./domStuff.js"
+import {Todo} from "./Todo.js"
+import {TodoCollection} from "./todoCollection.js"
 
-
-
-
-
-
-
-let allCollections=[]
-function updateLocalStorage(){
-    localStorage.setItem("app",JSON.stringify(allCollections))
+function parseTohtml(str){
+    const tempDiv=document.createElement("div")
+    tempDiv.innerHTML=str
+    return tempDiv.querySelector("*:first-child")
 }
 
+const getAppElem=()=>document.querySelector("#app")
+const allCollections=new (function(){
+    const collections=[]
+    this.add=(collection)=>collections.push(collection)
+    this.delete=(collection)=>collections.splice(collections.indexOf(collection),1)
+    this.get=(collectionName)=>this.collection.find((currentCollection)=>collectionName==currentCollection.name)
+})()
 
-if(!localStorage.getItem("app")){
-    localStorage.setItem("app",JSON.stringify([]))
-}else{
-    allCollections=JSON.parse(localStorage.getItem("app"))
-}
-// allCollections[0].todos=[new Todo("dfgsfggrtyrtu gh fgjhyh",1234545),new Todo("dfgsfggrtyrtu gh fgjhyh",1234545),new Todo("dfgsfggrtyrtu gh fgjhyh",1234545),]
-// allCollections[1].todos=[new Todo("dff sdffg",1234545),new Todo("dff sdffg",1234545),new Todo("dff sdffg",1234545),]
-displayDashboard(allCollections)
-if(document.querySelector(".collection-btn")){
-    document.querySelectorAll(".collection-btn")
-    .forEach(collectionBtn => {
-        collectionBtn.addEventListener("click",()=>{
-            console.log("clicked collection btn")
-            updateCollectionTab(allCollections.find(collection=>collection.name==collectionBtn.innerText))
-        })
-    });
+
+function addAppContainer(){
+    document.body.appendChild(parseTohtml(`<div id="app"></div>`))
 }
 
+function addNav(){
+    getAppElem().appendChild(parseTohtml(`
+    <nav><span id="" logo>Just Do IT!</span></nav>
+    `))
+}
+function addCollectionBtn(collectionName){
+    getAppElem().querySelector(".collections-nav").appendChild(parseTohtml(`
+    <button class="collection-btn">${collectionName}</button>
+    `))
+}
 
-addOnNewCollectionListener((collectionName)=>{
-    const currentCollection=new TodoCollection(collectionName)
-    const collectionBtn=makeCollectionBtn(currentCollection)
-    collectionBtn.addEventListener("click",()=>{
-        console.log("clicked collection btn")
-        updateCollectionTab(currentCollection)
-    })
-    allCollections.push(currentCollection)
-    updateCollectionTab(currentCollection)
-    updateLocalStorage()
-})
-function updateCollectionTab(currentCollection){
-    showCollectionTab(currentCollection)
-    console.log(JSON.stringify(allCollections))
-    addOnNewTodoListener((todoName,todoDate,collectionName)=>{
-        console.log(collectionName)
-        console.log(collectionName)
-        const currentTodo=new Todo(todoName,todoDate)
-        allCollections.find((collection)=>collection.name=collectionName).todos.push(currentTodo)
-        addTodoElem(currentTodo)
-        updateLocalStorage()
-        addOnDeleteTodoListener(todoName,()=>{
-            currentCollection.deleteTodo(todoName)
-            updateLocalStorage()
-        })
-        console.log(JSON.stringify(allCollections))
+function addSideBar(){
+    const sideBar=parseTohtml(`
+    <aside class="collections-nav">
+    <div class="add-collection-container">
+    <input type="text" id="add-collection-input">
+    <button id="add-collection-btn">✔️</button>
+    </div>
+    </aside>
+    `)
+    getAppElem().appendChild(sideBar)
+    const collectionNameInput=sideBar.querySelector("#add-collection-input")
+    const collectionSubmitBtn=sideBar.querySelector("#add-collection-btn")
+    collectionSubmitBtn.addEventListener("click",()=>{
+        const inputName=collectionNameInput.value
+        addCollectionBtn(inputName)
+        currentCollection=new TodoCollection(inputName)
+        allCollections.add(currentCollection)
+        changeCollectiontab(currentCollection)
     })
 }
+function showCollectionTab(){
+    const collectionTab=parseTohtml(`
+    <div class="current-collection-container">
+      <h2 class="collection-name"></h2>
+      <div class="collection-todos" data-collection-name="">
+        <div class="add-todo-container">
+          <input type="text" id="add-todo-name-input">
+          <input type="date" id="add-todo-date-input">
+          <button id="add-todo-btn">Add</button>
+        </div>
+      </div>
+    </div>
+    `)
+    collectionTab.style.display="none"
+    getAppElem().appendChild(collectionTab)
+}
+
+function changeCollectiontab(collection){
+    currentCollection=collection
+    const collectionTab=document.querySelector(".current-collection-container")
+    collectionTab.style.display=""
+    collectionTab.querySelector(".collection-name").innerText=collection.name
+    for(const todo of collection.todos){
+        addTodoElem(todo)
+    }
+}
+
+function addTodoElem(todo){
+    const collectionTodosElem=document.querySelector(".collection-todos")
+    collectionTodosElem.appendChild(parseTohtml(`
+    <div class="todo-container" data-todo-name="${todo.name}">
+        <input type="checkbox" class="todo-check">
+        <input type="text" class="todo-name" value="${todo.name}"></input>
+        <input type="date" class="todo-date" value="${todo.date}"></input>
+    </div>
+    `))
+}
+
+
+
+addAppContainer()
+addNav()
+addSideBar()
+showCollectionTab()
+
+let currentCollection=null

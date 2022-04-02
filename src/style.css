@@ -97,3 +97,8 @@ nav {
     background: lightblue;
     border: none;
 }
+
+.todo-name{
+    width: 500px;
+    border: none;
+}
