@@ -10,9 +10,7 @@
 `
 
 
-`<div id="app">
-    <nav><span id=""logo>Just Do IT!</span></nav>
-  </div>`
+`<div id="app"></div>`
 
   `
   <div class="add-collection-container">

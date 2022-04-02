@@ -93,6 +93,9 @@ function changeCollectiontab(collection){
 
 function addTodoElem(todoName,todoDate){
     const collectionTodosElem=document.querySelector(".collection-todos")
+    if(currentCollection.name=="Inbox"){
+        const currentCollection=findCollectionFor(todoName)
+    }
     const todoElem=parseTohtml(`
     <div class="todo-container" data-todo-name="${todoName}">
         <input type="checkbox" class="todo-check">
@@ -100,6 +103,7 @@ function addTodoElem(todoName,todoDate){
         <input type="date" class="todo-date" value="${todoDate}"></input>
     </div>
     `)
+
     todoElem.querySelector(".todo-check").addEventListener("click",()=>{
         // removeTodoElem(todoElem)  
         todoElem.remove() 
@@ -118,20 +122,54 @@ function addTodoElem(todoName,todoDate){
     collectionTodosElem.appendChild(todoElem)
 
 }
-// function removeTodoElem(todoName){
-// }
 
 function removeAllTodos(){
     document.querySelectorAll(".todo-container").forEach((todoElem)=>todoElem.remove())
 }
 
+function addTodayTabBtn(){
+    const inboxTabBtn=parseTohtml(`
+    <button class="collection-btn" style="background: none;color: black;border: 2px solid black;">
+        Inbox
+    </button>
+    `)
+    getAppElem().querySelector(".collections-nav").appendChild(inboxTabBtn)
+    const inboxTabCollection=allCollections.get("Inbox")
+    inboxTabBtn.addEventListener("click",()=>{
+        changeCollectiontab(inboxTabCollection)
+        const todaysTodos=getAllTodos().filter((todo)=>todo.date==new Date().toISOString().slice(0,10))
+        for(const todo of todaysTodos){
+            addTodoElem(todo.name,todo.date)
+        }
+    })
+    changeCollectiontab(inboxTabCollection)
+    const todaysTodos=getAllTodos().filter((todo)=>todo.date==new Date().toISOString().slice(0,10))
+    for(const todo of todaysTodos){
+        addTodoElem(todo.name,todo.date)
+    }
+}
+
+function findCollectionFor(todoName){
+    return allCollections.collections().find((collection)=>collection.todos.some((todo)=>todo.name==todoName))
+}
+function getAllTodos(){
+    let todos=[]
+    for(const collection of allCollections.collections()){
+        todos=[...todos,...collection.todos]
+    }
+    return todos
+}
+
+let currentCollection=null
+allCollections.add(new TodoCollection("Inbox"))
 
 addAppContainer()
 addNav()
 addSideBar()
 showCollectionTab()
+addTodayTabBtn()
+changeCollectiontab(allCollections.get("Inbox"))
 
-let currentCollection=null
 
 setInterval(()=>{
     console.log(JSON.stringify(allCollections.collections()))
