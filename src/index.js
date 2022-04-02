@@ -2,6 +2,10 @@ import "./style.css"
 import {Todo} from "./Todo.js"
 import {TodoCollection} from "./todoCollection.js"
 
+
+
+
+
 function parseTohtml(str){
     const tempDiv=document.createElement("div")
     tempDiv.innerHTML=str
@@ -10,11 +14,10 @@ function parseTohtml(str){
 
 const getAppElem=()=>document.querySelector("#app")
 const allCollections=new (function(){
-    const collections=[]
-    this.add=(collection)=>collections.push(collection)
-    this.delete=(collection)=>collections.splice(collections.indexOf(collection),1)
-    this.get=(collectionName)=>collections.find((currentCollection)=>collectionName==currentCollection.name)
-    this.collections=()=>collections
+    this.collections=[]
+    this.add=(collection)=>this.collections.push(collection)
+    this.delete=(collection)=>this.collections.splice(collections.indexOf(collection),1)
+    this.get=(collectionName)=>this.collections.find((currentCollection)=>collectionName==currentCollection.name)
 })()
 
 
@@ -150,11 +153,11 @@ function addTodayTabBtn(){
 }
 
 function findCollectionFor(todoName){
-    return allCollections.collections().find((collection)=>collection.todos.some((todo)=>todo.name==todoName))
+    return allCollections.collections.find((collection)=>collection.todos.some((todo)=>todo.name==todoName))
 }
 function getAllTodos(){
     let todos=[]
-    for(const collection of allCollections.collections()){
+    for(const collection of allCollections.collections){
         todos=[...todos,...collection.todos]
     }
     return todos
@@ -172,6 +175,6 @@ changeCollectiontab(allCollections.get("Inbox"))
 
 
 setInterval(()=>{
-    console.log(JSON.stringify(allCollections.collections()))
+    console.log(JSON.stringify(allCollections.collections))
 },1000)
 
