@@ -82,6 +82,11 @@ function showCollectionTab(){
       </div>
     </div>
     `)
+    for(const collection of allCollections.filter((collection)=>collection.name)){
+        addCollectionBtn(collection)
+    }
+
+
     collectionTab.querySelector("#add-todo-btn").addEventListener("click",()=>{
         const todoName=collectionTab.querySelector("#add-todo-name-input").value
         const todoDate=collectionTab.querySelector("#add-todo-date-input").value
@@ -167,6 +172,7 @@ function addTodayTabBtn(){
 }
 
 function findCollectionFor(todoName){
+    console.log(todoName,allCollections.collections.find((collection)=>collection.todos.some((todo)=>todo.name==todoName)))
     return allCollections.collections.find((collection)=>collection.todos.some((todo)=>todo.name==todoName))
 }
 function getAllTodos(){
