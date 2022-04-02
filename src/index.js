@@ -86,7 +86,8 @@ function showCollectionTab(){
         const todoName=collectionTab.querySelector("#add-todo-name-input").value
         const todoDate=collectionTab.querySelector("#add-todo-date-input").value
         addTodoElem(todoName,todoDate)
-        currentCollection.add(todoName,todoDate)
+        console.log(currentCollection)
+        currentCollection.todos.push(new Todo(todoName,todoDate))
         updatePersistentData()
     })
     collectionTab.style.display="none"
@@ -120,18 +121,18 @@ function addTodoElem(todoName,todoDate){
     todoElem.querySelector(".todo-check").addEventListener("click",()=>{
         // removeTodoElem(todoElem)  
         todoElem.remove() 
-        currentCollection.delete(currentCollection.get(todoName))
+        currentCollection.todos=currentCollection.todos.filter((t)=>t!==currentCollection.todos.find((t)=>todoName==t.name))
         updatePersistentData()
     })
     todoElem.querySelector(".todo-name").addEventListener("focusin",(evt)=>{
         evt.target.addEventListener("focusout",()=>{
-            currentCollection.get(todoName).name=evt.target.value
+            currentCollection.todos.find((t)=>todoName==t.name).name=evt.target.value
             updatePersistentData()
         },{once:true})
     })
     todoElem.querySelector(".todo-date").addEventListener("focusin",(evt)=>{
         evt.target.addEventListener("focusout",()=>{
-            currentCollection.get(todoName).date=evt.target.value
+            currentCollection.todos.find((t)=>todoName==t.name).date=evt.target.value
             updatePersistentData()
         },{once:true})
     })

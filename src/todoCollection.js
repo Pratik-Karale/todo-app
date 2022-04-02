@@ -1,5 +1,5 @@
 import {Todo} from "./Todo.js"
-
+//  tion.get
 class TodoCollection{
     constructor(collectionName){
         this.todos=[]
