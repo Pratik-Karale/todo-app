@@ -82,8 +82,9 @@ function showCollectionTab(){
       </div>
     </div>
     `)
-    for(const collection of allCollections.filter((collection)=>collection.name)){
-        addCollectionBtn(collection)
+    for(const collection of allCollections.collections.filter((collection)=>collection.name)){
+        if(collection.name=="Inbox")continue;
+        addCollectionBtn(collection.name)
     }
 
 
