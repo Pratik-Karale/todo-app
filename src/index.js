@@ -4,7 +4,9 @@ import {TodoCollection} from "./todoCollection.js"
 
 
 
-
+function updatePersistentData(){
+    localStorage.setItem("app",JSON.stringify(allCollections))
+}
 
 function parseTohtml(str){
     const tempDiv=document.createElement("div")
@@ -20,6 +22,12 @@ const allCollections=new (function(){
     this.get=(collectionName)=>this.collections.find((currentCollection)=>collectionName==currentCollection.name)
 })()
 
+
+if(localStorage.getItem("app")){
+    allCollections.collections=JSON.parse(localStorage.getItem("app"))
+}else{
+    localStorage.setItem("app","")
+}
 
 function addAppContainer(){
     document.body.appendChild(parseTohtml(`<div id="app"></div>`))
@@ -58,6 +66,7 @@ function addSideBar(){
         currentCollection=new TodoCollection(inputName)
         allCollections.add(currentCollection)
         changeCollectiontab(currentCollection)
+        updatePersistentData()
     })
 }
 function showCollectionTab(){
@@ -78,6 +87,7 @@ function showCollectionTab(){
         const todoDate=collectionTab.querySelector("#add-todo-date-input").value
         addTodoElem(todoName,todoDate)
         currentCollection.add(todoName,todoDate)
+        updatePersistentData()
     })
     collectionTab.style.display="none"
     getAppElem().appendChild(collectionTab)
@@ -86,7 +96,7 @@ function showCollectionTab(){
 function changeCollectiontab(collection){
     currentCollection=collection
     const collectionTab=document.querySelector(".current-collection-container")
-    removeAllTodos()
+    removeAllTodoElems()
     collectionTab.style.display=""
     collectionTab.querySelector(".collection-name").innerText=collection.name
     for(const todo of collection.todos){
@@ -111,22 +121,25 @@ function addTodoElem(todoName,todoDate){
         // removeTodoElem(todoElem)  
         todoElem.remove() 
         currentCollection.delete(currentCollection.get(todoName))
+        updatePersistentData()
     })
     todoElem.querySelector(".todo-name").addEventListener("focusin",(evt)=>{
         evt.target.addEventListener("focusout",()=>{
             currentCollection.get(todoName).name=evt.target.value
+            updatePersistentData()
         },{once:true})
     })
     todoElem.querySelector(".todo-date").addEventListener("focusin",(evt)=>{
         evt.target.addEventListener("focusout",()=>{
             currentCollection.get(todoName).date=evt.target.value
+            updatePersistentData()
         },{once:true})
     })
     collectionTodosElem.appendChild(todoElem)
 
 }
 
-function removeAllTodos(){
+function removeAllTodoElems(){
     document.querySelectorAll(".todo-container").forEach((todoElem)=>todoElem.remove())
 }
 
@@ -165,7 +178,7 @@ function getAllTodos(){
 
 let currentCollection=null
 allCollections.add(new TodoCollection("Inbox"))
-
+updatePersistentData()
 addAppContainer()
 addNav()
 addSideBar()
