@@ -5,7 +5,7 @@ import {TodoCollection} from "./todoCollection.js"
 
 
 function updatePersistentData(){
-    localStorage.setItem("app",JSON.stringify(allCollections))
+    localStorage.setItem("app",JSON.stringify(allCollections.collections))
 }
 
 function parseTohtml(str){
@@ -177,6 +177,7 @@ function getAllTodos(){
 }
 
 let currentCollection=null
+console.log(allCollections)
 allCollections.add(new TodoCollection("Inbox"))
 updatePersistentData()
 addAppContainer()
