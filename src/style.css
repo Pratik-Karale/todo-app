@@ -45,6 +45,13 @@ nav {
     font-size: 1.3rem;
     padding: 10px 20px 10px 20px;
     text-decoration: none;
+    display: flex;
+    justify-content: space-around;
+}
+.delete-collection-btn{
+    background: white;
+    padding: 4px;
+    border-radius: 50%;
 }
 
 .collection-btn:hover {
