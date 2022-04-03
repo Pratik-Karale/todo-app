@@ -40,11 +40,19 @@ function addNav(){
 }
 function addCollectionBtn(collectionName){
     const collectionBtn=parseTohtml(`
-    <button class="collection-btn">${collectionName}</button>
+    <button class="collection-btn">${collectionName}<span class="delete-collection-btn">❌</span></button>
     `)
+    console.log(collectionBtn)
     getAppElem().querySelector(".collections-nav").appendChild(collectionBtn)
+    collectionBtn.querySelector(".delete-collection-btn").addEventListener("click",()=>{
+        collectionBtn.remove()
+        allCollections.delete(allCollections.get(collectionName))
+        updatePersistentData()
+        changeCollectiontab(allCollections.get("Inbox"))
+    })
     collectionBtn.addEventListener("click",()=>{
-        changeCollectiontab(allCollections.get(collectionName))
+        let foundCollection=allCollections.get(collectionName)
+        if(foundCollection) changeCollectiontab(foundCollection);
     })
 }
 
